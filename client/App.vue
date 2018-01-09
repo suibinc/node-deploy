@@ -1,42 +1,56 @@
 <template>
     <div id="app">
-        <tabs tab-position="left">
+        <tabs tab-position="left" v-model="active">
             <tab-pane label="工程列表">
-                <build-list-view :list="buildJson.list" @compiler="handleCompiler"/>
+                <build-list-view :list="buildJson.list" @tab-changed="handleActive"/>
             </tab-pane>
             <tab-pane label="构建队列">
-                构建队列
+                <build-queue-view :list="buildJson.list" :queue="queue"/>
             </tab-pane>
             <tab-pane label="构建详情">
-                构建详情
+                <build-detail-view/>
             </tab-pane>
         </tabs>
     </div>
 </template>
 
 <script>
+    import store from '../library/fetch';
     import BuildJson from '../config/build-list';
     import { Row, Col, Tabs, TabPane } from 'element-ui';
     import BuildListView from './views/build-list';
+    import BuildQueueView from './views/queue';
+    import BuildDetailView from './views/detail';
 
     export default {
         components: {
-            Row, Col, Tabs, TabPane, BuildListView
+            Row, Col, Tabs, TabPane, BuildListView, BuildQueueView, BuildDetailView
         },
         data() {
             return {
-                buildJson: BuildJson
+                buildJson: BuildJson,
+                queue: [],
+                timer: null,
+                active: 0
             };
         },
         mounted() {
             console.log('start');
+            if (this.timer) {
+                clearInterval(this.timer);
+            }
+            this.timer = setInterval(this.handleQueue, 1000);
         },
         methods: {
-            handleCompiler(key, keyPath) {
-                console.log(key, keyPath);
+            handleActive(index) {
+                this.active = `${index}`;
             },
-            handleClose(key, keyPath) {
-                console.log(key, keyPath);
+            handleQueue() {
+                store.fetchGet('/build/queue').then(data => {
+                    if (data.code === 0) {
+                        this.queue = data.result;
+                    }
+                });
             }
         }
     };

@@ -7,6 +7,7 @@ function resolve(dir) {
 let _ = {
     PORT: 3333,
     PATH: {
+        SCRIPT_ROOT: resolve('scripts'),
         PROJECT_ROOT: resolve(''),
         PROJECT_DIST: resolve('dist'),
         CLIENT_ROOT: resolve('client'),

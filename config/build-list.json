@@ -1,21 +1,16 @@
 {
     "list": [
         {
-            "name": "first",
-            "desc": "第一个工程",
-            "exec": [
-                ""
-            ]
+            "name": "第一个工程",
+            "desc": "第一个工程的描述信息",
+            "compile": "test.bat",
+            "deploy": "test.bat"
         },
         {
-            "name": "fadsfasd",
-            "desc": "第一个工程",
-            "compile": [
-                ""
-            ],
-            "deploy": [
-
-            ]
+            "name": "第二个工程",
+            "desc": "第一个工程的描述信息，可以展示在列表上面",
+            "compile": "test.bat",
+            "deploy": "test.bat"
         }
     ]
 }
