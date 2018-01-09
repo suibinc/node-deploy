@@ -1,5 +1,5 @@
 import { assetsPath, cssLoaders } from '../utils';
-import config from '../../config';
+import config from '../config';
 
 module.exports = {
     context: config.PATH.PROJECT_DIST,

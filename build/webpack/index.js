@@ -1,8 +1,10 @@
 import merge from 'webpack-merge';
 import baseWebpackConfig from './base';
-import config from '../../config';
+import config from '../config';
+import { assetsPath } from '../utils';
 
-let HtmlWebpackPlugin = require('html-webpack-plugin'); // html处理
+let HtmlWebpackPlugin = require('html-webpack-plugin');
+let ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 export default merge(baseWebpackConfig, {
     entry: {
@@ -11,7 +13,7 @@ export default merge(baseWebpackConfig, {
     output: {
         path: config.PATH.PROJECT_DIST,
         filename: `js/[name].js`,
-        publicPath: ''
+        publicPath: '/'
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -26,5 +28,8 @@ export default merge(baseWebpackConfig, {
             },
             chunksSortMode: 'dependency'
         }),
+        new ExtractTextPlugin({
+            filename: assetsPath(`css/[name].css`)
+        })
     ]
 });

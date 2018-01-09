@@ -1,0 +1,21 @@
+{
+    "list": [
+        {
+            "name": "first",
+            "desc": "第一个工程",
+            "exec": [
+                ""
+            ]
+        },
+        {
+            "name": "fadsfasd",
+            "desc": "第一个工程",
+            "compile": [
+                ""
+            ],
+            "deploy": [
+
+            ]
+        }
+    ]
+}

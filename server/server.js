@@ -5,7 +5,7 @@ import koaWebpack from 'koa-webpack';
 import webpack from 'webpack';
 import MemoryFS from 'memory-fs';
 import path from 'path';
-import config from '../config';
+import config from '../build/config';
 import router from './routes';
 import webpackConfig from '../build/webpack';
 
