@@ -1,16 +1,22 @@
 import program from 'commander';
-import packageJson from '../package.json';
+import packageJson from '../../package.json';
 import Koa from 'koa';
 import koaWebpack from 'koa-webpack';
 import webpack from 'webpack';
 import MemoryFS from 'memory-fs';
 import path from 'path';
-import config from '../build/config';
+import config from '../../build/config';
 import router from './routes';
-import webpackConfig from '../build/webpack';
+import webpackConfig from '../../build/webpack';
+import handler from './framework/handler';
 
 const app = new Koa();
 const fs = new MemoryFS();
+
+const server = require('http').createServer(app.callback());
+const io = require('socket.io')(server);
+io.set('heartbeat interval', 60000);
+io.set('heartbeat timeout', 5000);
 
 program.version(packageJson.version)
     .option('-c, --config [config]', 'webpack.config.js', `./build/webpack/index.js`)
@@ -25,7 +31,7 @@ for (let name in webpackConfig.entry) {
     if (webpackConfig.entry.hasOwnProperty(name)) {
         webpackConfig.entry[name] = [
             webpackConfig.entry[name],
-            `webpack-hot-middleware/client?path=http://127.0.0.1:${config.PORT}/__webpack_hmr&reload=true`
+            `webpack-hot-middleware/client?path=http://127.0.0.1:${config.SERVER_PORT}/__webpack_hmr&reload=true`
         ];
         webpackConfig.plugins.push(
             // 开启全局的模块热替换(HMR)
@@ -70,6 +76,33 @@ router.get('/', async ctx => {
     ctx.body = webpackHtml || 'null';
 });
 
+io.on('connection', socket => {
+    console.log('new connection');
+    socket.on('application', (data, cb) => {
+        console.log('application', data);
+        handler.application().then(result => {
+            console.log(result);
+            socket.emit('application', result);
+        });
+    });
+
+    socket.on('build-list', (data, cb) => {
+        console.log('message');
+        console.log(data);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('some one disconnect');
+    });
+
+    socket.on('event', data => {
+        console.log('event');
+        console.log(data);
+        socket.emit('event', 'fasdfaf');
+    });
+});
+server.listen(config.SOCKET_PORT);
+
 app.use(router.routes());
 app.use(router.allowedMethods());
-app.listen(config.PORT || 3000);
+app.listen(config.SERVER_PORT);

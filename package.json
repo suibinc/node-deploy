@@ -8,7 +8,7 @@
   },
   "betterScripts": {
     "deploy": {
-      "command": "nodemon ./server/koa-start.js -c ./build/webpack/act-web.js --watch ./server ./scripts ./config",
+      "command": "nodemon ./src/server/koa-start.js -c ./build/webpack/act-web.js --watch ./src/server ./config",
       "env": {
         "PROJECT_NAME": "deploy",
         "PROJECT_ROOT": "client"
@@ -29,8 +29,11 @@
     "axios": "^0.17.1",
     "element-ui": "^2.0.11",
     "es6-promise": "^4.2.2",
+    "socket.io": "^2.0.4",
+    "socket.io-client": "^2.0.4",
     "vue": "^2.5.13",
     "vue-router": "^3.0.1",
+    "vuex": "^3.0.1",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {

@@ -1,5 +1,27 @@
 <template>
     <div class="container">
+        <el-table :data="list" border style="width: 100%">
+            <table-column prop="name" label="应用名称" width="200"/>
+            <table-column prop="desc" label="应用描述"/>
+            <table-column prop="time" label="上次构建时间" width="110"/>
+            <table-column fixed="right" label="操作" width="160">
+                <template slot-scope="scope">
+                    <el-button type="text" size="small">查看</el-button>
+                    <el-button type="text" size="small">构建</el-button>
+                    <dropdown style="margin-left: 10px;">
+                        <span class="el-dropdown-link">更多<i class="el-icon-arrow-down el-icon--right"></i></span>
+                        <dropdown-menu slot="dropdown" style="text-align: center">
+                            <dropdown-item>构建脚本</dropdown-item>
+                            <dropdown-item>发布脚本</dropdown-item>
+                            <dropdown-item>构建历史</dropdown-item>
+                            <dropdown-item divided>修改</dropdown-item>
+                            <dropdown-item style="color: #409EFF;">复制</dropdown-item>
+                            <dropdown-item style="color: #F56C6C;">删除</dropdown-item>
+                        </dropdown-menu>
+                    </dropdown>
+                </template>
+            </table-column>
+        </el-table>
         <h4>工程列表</h4>
         <ul class="build-list">
             <li v-for="(item, index) in list">
@@ -23,22 +45,24 @@
 </template>
 
 <script>
-    import { Button as ElButton } from 'element-ui';
     import store from '../../library/fetch';
+    import {
+        Button as ElButton,
+        Table as ElTable,
+        TableColumn,
+        Dropdown,
+        DropdownMenu,
+        DropdownItem
+    } from 'element-ui';
 
     export default {
         components: {
-            ElButton
+            ElButton, ElTable, TableColumn, Dropdown, DropdownMenu, DropdownItem
         },
         props: {
             list: Array
         },
         methods: {
-            loadBuildList() {
-                store.fetchGet('/build/list').then(data => {
-                    return data;
-                });
-            },
             execCompiler(item, index) {
                 store.fetchGet(`/compiler/${index}`).then(data => {
                     this.$emit('tab-changed', 1);
@@ -50,6 +74,10 @@
 
 <style lang="less">
     .container {
+        .el-dropdown-link {
+            cursor: pointer;
+            color: #409EFF;
+        }
         ul {
             list-style: none;
             li {
