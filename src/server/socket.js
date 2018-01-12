@@ -1,5 +1,5 @@
-import handler from './framework/handler';
 import * as SOCKET_EVENTS from '../library/utils/events';
+import handler from './framework/handler';
 
 let server = null;
 let io = null;
@@ -18,21 +18,41 @@ let register = socket => {
     socket.on(SOCKET_EVENTS.GET_PROJECT_LIST, (data, cb) => {
         handler[SOCKET_EVENTS.GET_PROJECT_LIST]().then(result => {
             socket.emit(SOCKET_EVENTS.GET_PROJECT_LIST, result);
-            socket.emit(SOCKET_EVENTS.SHOW_MESSAGE, {
-                message: 'login succ'
-            });
         });
     });
 
     // 导入工程列表
     socket.on(SOCKET_EVENTS.ADD_PROJECT_LIST, (data, cb) => {
-        if (data && data.name && data.file) {
+        if (data instanceof Array) {
             handler[SOCKET_EVENTS.ADD_PROJECT_LIST](data).then(result => {
                 socket.emit(SOCKET_EVENTS.GET_PROJECT_LIST, result);
                 socket.emit(SOCKET_EVENTS.SHOW_MESSAGE, {
                     type: 'success',
                     message: '导入应用成功'
                 });
+            });
+        } else {
+            socket.emit(SOCKET_EVENTS.SHOW_MESSAGE, {
+                type: 'error',
+                message: '导入应用失败'
+            });
+        }
+    });
+
+    // 导入工程列表
+    socket.on(SOCKET_EVENTS.DEL_PROJECT_LIST, (data, cb) => {
+        if (data && data.uuid) {
+            handler[SOCKET_EVENTS.DEL_PROJECT_LIST](data).then(result => {
+                socket.emit(SOCKET_EVENTS.GET_PROJECT_LIST, result);
+                socket.emit(SOCKET_EVENTS.SHOW_MESSAGE, {
+                    type: 'success',
+                    message: '删除应用成功'
+                });
+            });
+        } else {
+            socket.emit(SOCKET_EVENTS.SHOW_MESSAGE, {
+                type: 'error',
+                message: '删除应用失败，应用不存在'
             });
         }
     });

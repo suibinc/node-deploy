@@ -1,5 +1,6 @@
 import config from '../../../build/config';
 import State from '../../library/utils/State';
+import { guid } from '../../library/utils';
 import file from '../../library/utils/file';
 import * as SOCKET_EVENTS from '../../library/utils/events';
 
@@ -12,7 +13,6 @@ let taskQueue = [];
 let projectList = [];
 let projectJson = file.readFileSync(PATH_PROJECT);
 if (projectJson.length > 2) projectList = JSON.parse(projectJson);
-
 
 class Handler {
     constructor() {
@@ -30,18 +30,30 @@ class Handler {
         return projectList;
     }
 
-    async [SOCKET_EVENTS.ADD_PROJECT_LIST](data) {
-        projectList.push({
-            name: data.name,
-            desc: data.desc,
-            script: data.script || [],
-            latest: {}
+    async [SOCKET_EVENTS.ADD_PROJECT_LIST](list) {
+        console.log(list);
+        list.forEach(data => {
+            let uuid = guid();
+            projectList.push({
+                uuid: uuid,
+                name: data.name || uuid,
+                desc: data.desc || '',
+                script: data.script || [],
+                latest: {},
+                status: State.NORMAL
+            });
         });
-        file.writeFileSync(PATH_PROJECT, JSON.stringify(projectList));
+        file.writeFileSync(PATH_PROJECT, JSON.stringify(projectList), undefined, false);
         return projectList;
     }
 
     async [SOCKET_EVENTS.DEL_PROJECT_LIST](data) {
+        console.log('delete', data.uuid);
+        let index = projectList.findIndex(item => item.uuid === data.uuid);
+        if (index >= 0) {
+            projectList.splice(index, 1);
+            file.writeFileSync(PATH_PROJECT, JSON.stringify(projectList), undefined, false);
+        }
         return projectList;
     }
 

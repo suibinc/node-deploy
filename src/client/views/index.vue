@@ -13,7 +13,7 @@
             <build-detail-view/>
         </tab-pane>
         <tab-pane label="全局设置">
-            <settings-view/>
+            <settings-view @send="send"/>
         </tab-pane>
         <tab-pane label="权限管理">
             <build-detail-view/>
