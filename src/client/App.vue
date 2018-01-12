@@ -1,17 +1,17 @@
 <template>
     <div id="app">
-        <app-view/>
+        <app-view @send="send"/>
     </div>
 </template>
 
 <script>
     import io from 'socket.io-client';
-    import { UPDATE_APPLICATIONS } from './vuex/actions';
+    import { UPDATE_PROJECT_LIST, UPDATE_USER_SCRIPT, UPDATE_USER_CONFIG } from './vuex/actions';
+    import { GET_PROJECT_LIST, GET_USER_CONFIG, GET_USER_SCRIPT, SHOW_MESSAGE } from '../library/utils/events';
 
     import config from '../../build/config';
 
     import AppView from './views/index';
-    import store from '../library/fetch';
 
     export default {
         components: {
@@ -19,6 +19,7 @@
         },
         data() {
             return {
+                ready: false,
                 socket: null,
                 buildJson: {}
             };
@@ -28,30 +29,44 @@
 
             this.socket = io(`http://localhost:${config.SOCKET_PORT}`);
             this.socket.on('connect', data => {
-                console.log(data);
-                this.send('application', 'fasdfasfasfasdfas');
+                this.ready = true;
+                this.send(GET_PROJECT_LIST);
+                this.send(GET_USER_CONFIG);
+                this.send(GET_USER_SCRIPT);
             });
             this.initial();
         },
         methods: {
             initial() {
-                this.socket.on('application', data => {
-                    console.log('------', data);
+                this.socket.on(GET_PROJECT_LIST, data => {
                     this.$store.dispatch({
-                        type: UPDATE_APPLICATIONS,
+                        type: UPDATE_PROJECT_LIST,
                         list: data
                     });
                 });
+
+                this.socket.on(GET_USER_SCRIPT, data => {
+                    this.$store.dispatch({
+                        type: UPDATE_USER_SCRIPT,
+                        data: data
+                    });
+                });
+
+                this.socket.on(GET_USER_CONFIG, data => {
+                    this.$store.dispatch({
+                        type: UPDATE_USER_CONFIG,
+                        data: data
+                    });
+                });
+
+                this.socket.on(SHOW_MESSAGE, data => {
+                    this.$message(data);
+                });
             },
             send(event, message) {
-                this.socket.emit(event, message);
-            },
-            handleQueue() {
-                store.fetchGet('/build/queue').then(data => {
-                    if (data.code === 0) {
-                        this.queue = data.result;
-                    }
-                });
+                if (!this.ready) return false;
+                console.log('socket emit', event, message);
+                this.socket.emit(event, message || '');
             }
         }
     };
@@ -67,6 +82,18 @@
         * {
             margin: 0;
             padding: 0;
+        }
+        .status-primary {
+            color: #409EFF;
+            &:hover {
+                color: #409EFF;
+            }
+        }
+        .status-danger {
+            color: #F56C6C;
+            &:hover {
+                color: #F56C6C;
+            }
         }
     }
 

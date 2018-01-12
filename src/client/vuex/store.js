@@ -16,7 +16,15 @@ function generatorGetters(state) {
 }
 
 const state = {
-    applications: []
+    projectList: [],
+    userScript: {
+        list: []
+    },
+    userConfig: { // 用户设置文件
+        list: []
+    },
+    taskQueue: [],
+    buildRepo: ''
 };
 
 export default {

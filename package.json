@@ -8,7 +8,7 @@
   },
   "betterScripts": {
     "deploy": {
-      "command": "nodemon ./src/server/koa-start.js -c ./build/webpack/act-web.js --watch ./src/server ./config",
+      "command": "nodemon ./src/server/koa-start.js -c ./build/webpack/act-web.js --watch ./config ./src/server",
       "env": {
         "PROJECT_NAME": "deploy",
         "PROJECT_ROOT": "client"
