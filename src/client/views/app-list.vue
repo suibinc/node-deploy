@@ -20,7 +20,7 @@
             <table-column fixed="right" label="操作" width="160">
                 <template slot-scope="scope">
                     <el-button type="text" size="small">查看</el-button>
-                    <el-button type="text" size="small">构建</el-button>
+                    <el-button type="text" size="small" @click="buildPro(scope.row)">构建</el-button>
                     <dropdown style="margin-left: 10px;" @command="handleCommand">
                         <span class="el-dropdown-link">更多<i class="el-icon-arrow-down el-icon--right"></i></span>
                         <dropdown-menu slot="dropdown" style="text-align: center">
@@ -38,14 +38,16 @@
                 </template>
             </table-column>
         </el-table>
-        <app-scripts :tag="show" :app="app" @send=""/>
+        <app-scripts :tag="show" :app="app"/>
+        <app-build-dialog :app="app"/>
     </div>
 </template>
 
 <script>
     import { DEL_PROJECT_LIST } from '../../library/utils/events';
     import State from '../../library/utils/State';
-    import AppScripts from './app-script.vue';
+    import AppScripts from './dialog/app-script.vue';
+    import AppBuildDialog from './dialog/app-build';
     import {
         Button as ElButton,
         Table as ElTable,
@@ -57,7 +59,7 @@
 
     export default {
         components: {
-            AppScripts, ElButton, ElTable, TableColumn, Dropdown, DropdownMenu, DropdownItem
+            AppScripts, ElButton, ElTable, TableColumn, Dropdown, DropdownMenu, DropdownItem, AppBuildDialog
         },
         props: {
             list: Array
@@ -95,6 +97,10 @@
                     this.delPro(option.data);
                     return true;
                 }
+            },
+            buildPro(item) {
+                this.app = item;
+                this.$root.$emit('TRIGGER-APP-BUILD', true);
             },
             linkPro(item) {
                 item.script = item.script || [];

@@ -9,3 +9,5 @@ export const GET_HISTORY_LIST = 'GET_HISTORY_LIST';
 export const SHOW_MESSAGE = 'SHOW_MESSAGE';
 export const SAVE_APP_SCRIPT = 'SAVE_APP_SCRIPT';
 export const SAVE_APP_VARIABLE = 'SAVE_APP_VARIABLE';
+
+export const EXEC_SCRIPT = 'RUN_SCRIPT';

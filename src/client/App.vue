@@ -6,8 +6,14 @@
 
 <script>
     import io from 'socket.io-client';
-    import { UPDATE_PROJECT_LIST, UPDATE_USER_SCRIPT, UPDATE_USER_CONFIG } from './vuex/actions';
-    import { GET_PROJECT_LIST, GET_USER_CONFIG, GET_USER_SCRIPT, SHOW_MESSAGE } from '../library/utils/events';
+    import { UPDATE_PROJECT_LIST, UPDATE_USER_SCRIPT, UPDATE_USER_CONFIG, UPDATE_TASK_QUEUE } from './vuex/actions';
+    import {
+        GET_PROJECT_LIST,
+        GET_USER_CONFIG,
+        GET_USER_SCRIPT,
+        GET_TASK_QUEUE,
+        SHOW_MESSAGE
+    } from '../library/utils/events';
 
     import config from '../../build/config';
 
@@ -60,6 +66,13 @@
                     });
                 });
 
+                this.socket.on(GET_TASK_QUEUE, data => {
+                    this.$store.dispatch({
+                        type: UPDATE_TASK_QUEUE,
+                        list: data
+                    });
+                });
+
                 this.socket.on(SHOW_MESSAGE, data => {
                     this.$message(data);
                 });
@@ -83,6 +96,7 @@
         * {
             margin: 0;
             padding: 0;
+            outline: none;
         }
         .status-primary {
             color: #409EFF;
@@ -113,8 +127,13 @@
                 font-weight: normal;
             }
         }
-        .el-dialog__wrapper .el-dialog {
-            width: 800px;
+        .el-dialog__wrapper {
+            .el-dialog {
+                width: 800px;
+            }
+            &.small .el-dialog {
+                width: 600px;
+            }
         }
     }
 </style>

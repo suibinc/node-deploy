@@ -71,6 +71,16 @@ let register = socket => {
         });
     });
 
+    socket.on(SOCKET_EVENTS.EXEC_SCRIPT, (data, cb) => {
+        handler[SOCKET_EVENTS.EXEC_SCRIPT](data).then(result => {
+            socket.emit(SOCKET_EVENTS.GET_TASK_QUEUE, result);
+            socket.emit(SOCKET_EVENTS.SHOW_MESSAGE, {
+                type: 'success',
+                message: '已加入构建队列'
+            });
+        });
+    });
+
     socket.on(SOCKET_EVENTS.SAVE_APP_SCRIPT, (data, cb) => {
         handler[SOCKET_EVENTS.SAVE_APP_SCRIPT](data).then(result => {
             socket.emit(SOCKET_EVENTS.GET_PROJECT_LIST, result);

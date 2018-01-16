@@ -12,7 +12,7 @@
 
 <script>
     import { mapGetters } from 'vuex';
-    import { SAVE_APP_SCRIPT } from '../../library/utils/events';
+    import { SAVE_APP_SCRIPT } from '../../../library/utils/events';
     import {
         Dialog as ElDialog,
         Table as ElTable,

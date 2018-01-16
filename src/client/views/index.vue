@@ -35,7 +35,15 @@
 
     export default {
         components: {
-            Row, Col, Tabs, TabPane, AppListView, ScriptListView, BuildQueueView, BuildDetailView, SettingsView
+            Row,
+            Col,
+            Tabs,
+            TabPane,
+            AppListView,
+            ScriptListView,
+            BuildQueueView,
+            BuildDetailView,
+            SettingsView
         },
         data() {
             return {
