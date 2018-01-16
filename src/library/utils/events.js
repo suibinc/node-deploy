@@ -7,3 +7,5 @@ export const GET_TASK_QUEUE = 'GET_TASK_QUEUE';
 export const GET_BUILD_INFO = 'GET_BUILD_INFO';
 export const GET_HISTORY_LIST = 'GET_HISTORY_LIST';
 export const SHOW_MESSAGE = 'SHOW_MESSAGE';
+export const SAVE_APP_SCRIPT = 'SAVE_APP_SCRIPT';
+export const SAVE_APP_VARIABLE = 'SAVE_APP_VARIABLE';

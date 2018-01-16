@@ -24,9 +24,10 @@
                 buildJson: {}
             };
         },
+        created() {
+            this.$root.$on('send', this.send);
+        },
         mounted() {
-            console.log('start running');
-
             this.socket = io(`http://localhost:${config.SOCKET_PORT}`);
             this.socket.on('connect', data => {
                 this.ready = true;
@@ -111,6 +112,9 @@
                 font-size: 22px;
                 font-weight: normal;
             }
+        }
+        .el-dialog__wrapper .el-dialog {
+            width: 800px;
         }
     }
 </style>

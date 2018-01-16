@@ -61,6 +61,15 @@ class Handler {
         return userScript;
     }
 
+    async [SOCKET_EVENTS.SAVE_APP_SCRIPT](data) {
+        let index = projectList.findIndex(item => item.uuid === data.uuid);
+        if (index >= 0) {
+            projectList[index].script = data.list;
+            file.writeFileSync(PATH_PROJECT, JSON.stringify(projectList), undefined, false);
+        }
+        return projectList;
+    }
+
     async [SOCKET_EVENTS.GET_TASK_QUEUE]() {
         return taskQueue;
     }

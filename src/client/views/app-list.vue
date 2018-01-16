@@ -24,7 +24,7 @@
                     <dropdown style="margin-left: 10px;" @command="handleCommand">
                         <span class="el-dropdown-link">更多<i class="el-icon-arrow-down el-icon--right"></i></span>
                         <dropdown-menu slot="dropdown" style="text-align: center">
-                            <dropdown-item>关联脚本</dropdown-item>
+                            <dropdown-item :command="{type:'link',data:scope.row}">关联脚本</dropdown-item>
                             <dropdown-item>构建历史</dropdown-item>
                             <dropdown-item divided>修改</dropdown-item>
                             <dropdown-item class="status-primary" :command="{type:'copy',data:scope.row}">
@@ -38,12 +38,14 @@
                 </template>
             </table-column>
         </el-table>
+        <app-scripts :tag="show" :app="app" @send=""/>
     </div>
 </template>
 
 <script>
     import { DEL_PROJECT_LIST } from '../../library/utils/events';
     import State from '../../library/utils/State';
+    import AppScripts from './app-script.vue';
     import {
         Button as ElButton,
         Table as ElTable,
@@ -55,11 +57,18 @@
 
     export default {
         components: {
-            ElButton, ElTable, TableColumn, Dropdown, DropdownMenu, DropdownItem
+            AppScripts, ElButton, ElTable, TableColumn, Dropdown, DropdownMenu, DropdownItem
         },
         props: {
             list: Array
         },
+        data() {
+            return {
+                show: 1,
+                app: {}
+            };
+        },
+        computed: {},
         methods: {
             loadStatus(row) {
                 if (row.status === State.NORMAL) {
@@ -78,9 +87,19 @@
                 return row.time;
             },
             handleCommand(option) {
+                if (option.type === 'link') {
+                    this.linkPro(option.data);
+                    return true;
+                }
                 if (option.type === 'delete') {
                     this.delPro(option.data);
+                    return true;
                 }
+            },
+            linkPro(item) {
+                item.script = item.script || [];
+                this.app = item;
+                this.show++;
             },
             delPro(item) {
                 this.$confirm('是否删除该应用并清除相关构建历史?', '删除确认', {
@@ -98,6 +117,9 @@
 
 <style lang="less">
     .container {
+        .el-dialog__body {
+            padding: 0 15px 20px;
+        }
         .el-dropdown-link {
             cursor: pointer;
             color: #409EFF;
