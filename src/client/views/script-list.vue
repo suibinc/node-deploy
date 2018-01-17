@@ -16,6 +16,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex';
     import {
         Button as ElButton,
         Table as ElTable,
@@ -30,8 +31,11 @@
         components: {
             ElButton, ElTable, TableColumn, Dropdown, DropdownMenu, DropdownItem, ElAlert
         },
-        props: {
-            list: Array
+        computed: {
+            ...mapGetters(['PROJECT_LIST', 'USER_SCRIPT']),
+            list() {
+                return this.USER_SCRIPT.list || [];
+            }
         },
         data() {
             return {

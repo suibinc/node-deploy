@@ -8,6 +8,7 @@ let compiler = ($script, $params = {}, cb, end) => {
     });
 
     bat.stdout.on('data', (data) => {
+        console.log('data');
         let buffer = new Buffer(data);
         cb && cb(iconv.decode(buffer, 'gbk'));
     });
@@ -18,7 +19,7 @@ let compiler = ($script, $params = {}, cb, end) => {
     });
 
     bat.on('exit', (code) => {
-        console.log(`子进程退出码：${code}`);
+        console.log('exit');
         end && end(code);
     });
 };

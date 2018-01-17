@@ -24,6 +24,7 @@ const state = {
         list: []
     },
     taskQueue: [],
+    histories: [],
     buildRepo: ''
 };
 

@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <el-table :data="list" border style="width: 100%">
+        <el-table :data="PROJECT_LIST" border style="width: 100%">
             <table-column prop="name" label="状态" width="50">
                 <template slot-scope="scope" style="text-align: center;">
                     <div class="building-state">
@@ -13,24 +13,25 @@
             <table-column prop="time" label="上次构建" width="140">
                 <template slot-scope="scope">
                     <div class="building-timer">
-                        <span>2018-01-12 00:00:00</span>
+                        <span>{{ timeFormatter(scope.row) }}</span>
                     </div>
                 </template>
             </table-column>
             <table-column fixed="right" label="操作" width="160">
                 <template slot-scope="scope">
-                    <el-button type="text" size="small">查看</el-button>
+                    <el-button type="text" size="small" @click="viewPro(scope.row)">查看</el-button>
                     <el-button type="text" size="small" @click="buildPro(scope.row)">构建</el-button>
                     <dropdown style="margin-left: 10px;" @command="handleCommand">
                         <span class="el-dropdown-link">更多<i class="el-icon-arrow-down el-icon--right"></i></span>
                         <dropdown-menu slot="dropdown" style="text-align: center">
-                            <dropdown-item :command="{type:'link',data:scope.row}">关联脚本</dropdown-item>
+                            <dropdown-item :command="{type:'link', data:scope.row}">关联脚本</dropdown-item>
+                            <dropdown-item :command="{type:'data', data:scope.row}">局部变量</dropdown-item>
                             <dropdown-item>构建历史</dropdown-item>
                             <dropdown-item divided>修改</dropdown-item>
-                            <dropdown-item class="status-primary" :command="{type:'copy',data:scope.row}">
+                            <dropdown-item class="status-primary" :command="{type:'copy', data:scope.row}">
                                 复制
                             </dropdown-item>
-                            <dropdown-item class="status-danger" :command="{type:'delete',data:scope.row}">
+                            <dropdown-item class="status-danger" :command="{type:'delete', data:scope.row}">
                                 删除
                             </dropdown-item>
                         </dropdown-menu>
@@ -44,6 +45,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex';
     import { DEL_PROJECT_LIST } from '../../library/utils/events';
     import State from '../../library/utils/State';
     import AppScripts from './dialog/app-script.vue';
@@ -61,16 +63,15 @@
         components: {
             AppScripts, ElButton, ElTable, TableColumn, Dropdown, DropdownMenu, DropdownItem, AppBuildDialog
         },
-        props: {
-            list: Array
-        },
         data() {
             return {
                 show: 1,
                 app: {}
             };
         },
-        computed: {},
+        computed: {
+            ...mapGetters(['PROJECT_LIST'])
+        },
         methods: {
             loadStatus(row) {
                 if (row.status === State.NORMAL) {
@@ -84,11 +85,25 @@
                 }
                 return 'el-icon-error';
             },
+            formatNum(num) {
+                return num < 10 ? '0' + num : num;
+            },
             timeFormatter(row) {
-                if (!row.time) return '2018-01-12 00:00:00';
-                return row.time;
+                if (row.latest && row.latest.time) {
+                    let date = new Date(row.latest.time);
+                    let yy = date.getFullYear();
+                    let mo = this.formatNum(date.getMonth() + 1);
+                    let dd = this.formatNum(date.getDate());
+                    let hh = this.formatNum(date.getHours());
+                    let mm = this.formatNum(date.getMinutes());
+                    let ss = this.formatNum(date.getSeconds());
+
+                    return `${yy}-${mo}-${dd} ${hh}:${mm}:${ss}`;
+                }
+                if (!row.latest.time) return '1970-01-01 00:00:00';
             },
             handleCommand(option) {
+                if (!option.type) return false;
                 if (option.type === 'link') {
                     this.linkPro(option.data);
                     return true;
@@ -106,6 +121,10 @@
                 item.script = item.script || [];
                 this.app = item;
                 this.show++;
+            },
+            viewPro(item) {
+                this.$root.$emit('build-repo', item.uuid);
+                this.$emit('tab-changed', 3);
             },
             delPro(item) {
                 this.$confirm('是否删除该应用并清除相关构建历史?', '删除确认', {

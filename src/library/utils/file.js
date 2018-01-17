@@ -57,7 +57,7 @@ function readFileSync(path) {
 function writeFileSync(path, data, options, append) {
     path = pth.resolve(path);
     if (!_exists(path)) {
-        _.mkdir(_.pathinfo(path).dirname);
+        mkdir(pathinfo(path).dirname);
     }
     if (append) {
         fs.appendFileSync(path, data, options);
@@ -75,7 +75,7 @@ function writeFileSync(path, data, options, append) {
  * @function
  */
 function pathinfo(path) {
-    //can not use _() method directly for the case _.pathinfo('a/').
+    //can not use _() method directly for the case pathinfo('a/').
     var type = typeof path;
     if (arguments.length > 1) {
         path = Array.prototype.join.call(arguments, '/');
@@ -84,7 +84,7 @@ function pathinfo(path) {
     } else if (type === 'object') {
         path = Array.prototype.join.call(path, '/');
     }
-    return _.ext(path);
+    return ext(path);
 }
 
 /**
@@ -108,7 +108,7 @@ function pathinfo(path) {
  * @function
  */
 function ext(str) {
-    var info = _.query(str),
+    var info = query(str),
         pos;
     str = info.fullname = info.rest;
     if ((pos = str.lastIndexOf('/')) > -1) {

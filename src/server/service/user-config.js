@@ -14,7 +14,7 @@ class UserConfig {
         if (projectJson.length > 2) projectList = JSON.parse(projectJson);
         userConfig.list = userConfig.list || [];
         userConfig.list.forEach(app => {
-            app.status = State.NORMAL;
+            app.status = app.status || State.NORMAL;
         });
     }
 
@@ -69,7 +69,6 @@ class UserConfig {
     }
 
     findTask(data) {
-        console.log(data);
         let index = projectList.findIndex(item => item.uuid === data.uuid);
         if (index >= 0) {
             let _item = projectList[index];
@@ -79,6 +78,7 @@ class UserConfig {
             if (_script) {
                 _item.status = State.BUILDING;
                 return {
+                    task: guid(),
                     uuid: data.uuid,
                     name: _item.name,
                     params: _item.params,
@@ -87,6 +87,17 @@ class UserConfig {
             }
         }
         return null;
+    }
+
+    taskCallback(uuid, code, data) {
+        let index = projectList.findIndex(item => item.uuid === uuid);
+        if (index >= 0) {
+            let _item = projectList[index];
+            _item.status = code === 0 ? State.NORMAL : State.ERROR;
+            _item.latest = {
+                time: Date.now()
+            };
+        }
     }
 }
 

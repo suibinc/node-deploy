@@ -79,7 +79,7 @@
             },
             send(event, message) {
                 if (!this.ready) return false;
-                console.log('socket emit', event, message);
+                // console.log('socket emit', event, message);
                 this.socket.emit(event, message || '');
             }
         }
@@ -101,13 +101,13 @@
         .status-primary {
             color: #409EFF;
             &:hover {
-                color: #409EFF;
+                color: #409EFF !important;
             }
         }
         .status-danger {
             color: #F56C6C;
             &:hover {
-                color: #F56C6C;
+                color: #F56C6C !important;
             }
         }
     }

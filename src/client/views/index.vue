@@ -1,10 +1,10 @@
 <template>
     <tabs tab-position="top" v-model="active">
         <tab-pane label="应用列表">
-            <app-list-view :list="PROJECT_LIST" @tab-changed="tabChanged" @send="send"/>
+            <app-list-view @tab-changed="tabChanged" @send="send"/>
         </tab-pane>
         <tab-pane label="脚本列表">
-            <script-list-view :list="USER_SCRIPT.list" @tab-changed="tabChanged" @send="send"/>
+            <script-list-view @tab-changed="tabChanged" @send="send"/>
         </tab-pane>
         <tab-pane label="构建队列">
             <build-queue-view :list="PROJECT_LIST" :queue="queue" @send="send"/>
@@ -27,6 +27,7 @@
 <script>
     import { Col, Row, TabPane, Tabs } from 'element-ui';
     import { mapGetters } from 'vuex';
+    import { GET_PROJECT_LIST, GET_USER_SCRIPT } from '../../library/utils/events';
     import AppListView from './app-list';
     import BuildDetailView from './detail';
     import BuildQueueView from './queue';
@@ -47,6 +48,7 @@
         },
         data() {
             return {
+                timer: null,
                 queue: [],
                 active: 0
             };
@@ -55,7 +57,15 @@
             ...mapGetters(['PROJECT_LIST', 'USER_SCRIPT'])
         },
         mounted() {
-            console.warn(this.USER_SCRIPT);
+            if (this.timer) {
+                clearInterval(this.timer);
+            }
+            this.timer = setInterval(this.fetch, 2000);
+        },
+        destroyed() {
+            if (this.timer) {
+                clearInterval(this.timer);
+            }
         },
         methods: {
             send(event, message) {
@@ -63,6 +73,15 @@
             },
             tabChanged(active) {
                 this.active = `${active}`;
+            },
+            fetch() {
+                console.log('active', this.active);
+                let active = Number(this.active);
+                if (active === 0) {
+                    this.send(GET_PROJECT_LIST);
+                } else if (active === 1) {
+                    this.send(GET_USER_SCRIPT);
+                }
             }
         }
     };
