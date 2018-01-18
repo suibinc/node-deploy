@@ -1,6 +1,7 @@
 <template>
     <div id="app">
-        <app-view @send="send"/>
+        <router-tabs/>
+        <router-view/>
     </div>
 </template>
 
@@ -26,11 +27,11 @@
 
     import config from '../../build/config';
 
-    import AppView from './views/index';
+    import RouterTabs from './views/index';
 
     export default {
         components: {
-            AppView
+            RouterTabs
         },
         data() {
             return {
@@ -41,6 +42,8 @@
         },
         created() {
             this.$root.$on('send', this.send);
+            this.$root.$on('get-histories', this.getHistories);
+            this.$root.$on('get-build-info', this.getBuildInfo);
         },
         mounted() {
             this.socket = io(`http://localhost:${config.SOCKET_PORT}`);
@@ -83,7 +86,6 @@
                 });
 
                 this.socket.on(GET_HISTORY_LIST, data => {
-                    console.log('GET_HISTORY_LIST', data);
                     this.$store.dispatch({
                         type: UPDATE_HISTORIES,
                         list: data
@@ -105,6 +107,18 @@
                 if (!this.ready) return false;
                 console.log('socket emit', event, message);
                 this.socket.emit(event, message || '');
+            },
+            getHistories(uuid) {
+                if (!uuid) return false;
+                this.send(GET_HISTORY_LIST, {
+                    uuid: uuid
+                });
+            },
+            getBuildInfo(uuid) {
+                if (!uuid) return false;
+                this.send(GET_BUILD_INFO, {
+                    uuid: uuid
+                });
             }
         }
     };
@@ -121,6 +135,15 @@
             margin: 0;
             padding: 0;
             outline: none;
+        }
+        .clear-fix {
+            &:after {
+                content: '';
+                display: block;
+                width: 0;
+                height: 0;
+                clear: both;
+            }
         }
         .status-primary {
             color: #409EFF;
@@ -144,13 +167,6 @@
         border-radius: 6px;
         box-shadow: 0 0 4px #888;
         background: rgba(255, 255, 255, 0.9);
-        > .container {
-            padding: 0 20px;
-            h4 {
-                font-size: 22px;
-                font-weight: normal;
-            }
-        }
         .el-dialog__wrapper {
             .el-dialog {
                 width: 800px;

@@ -1,11 +1,11 @@
 <template>
-    <div class="container build-info-wrap">
+    <div class="container build-info-wrap clear-fix">
         <el-card style="width: 200px;float: left;">
             <div slot="header">
                 <span>构建历史</span>
             </div>
             <div class="build-info" v-if="buildInfoList.length === 0">暂无构建历史</div>
-            <ul class="build-histories">
+            <ul class="build-histories" v-if="buildInfoList.length !== 0">
                 <li v-for="(item, index) in buildInfoList" :key="index" class="build-item"
                     :class="{'active': active === index}" @click="handleClick(index)">
                     <span style="margin-right: 10px;">#{{index+1}}</span><span>构建用户：{{item.user}}</span> <br>
@@ -24,7 +24,6 @@
 
 <script>
     import { mapGetters } from 'vuex';
-    import { GET_HISTORY_LIST, GET_BUILD_INFO } from '../../library/utils/events';
     import { UPDATE_BUILD_INFO } from '../vuex/actions';
     import { Card as ElCard } from 'element-ui';
 
@@ -50,12 +49,12 @@
                 return this.HISTORIES.reverse();
             }
         },
-        created() {
-            this.$root.$on('build-info-changed', uuid => {
-                this.uuid = uuid;
-                this.clearBuildInfo();
-                this.getHistories();
-            });
+        watch: {
+            'HISTORIES': 'getBuildInfo'
+        },
+        mounted() {
+            console.log('build info mounted');
+            this.clearBuildInfo();
         },
         methods: {
             clearBuildInfo() {
@@ -81,25 +80,16 @@
                 }
                 return '1970-01-01 00:00:00';
             },
-            getHistories() {
-                if (!this.uuid) return false;
-                this.$root.$emit('send', GET_HISTORY_LIST, {
-                    uuid: this.uuid
-                });
-                setTimeout(() => {
-                    this.getBuildInfo();
-                }, 1000);
-            },
-            getBuildInfo() {
-                let item = this.HISTORIES[this.active];
+            getBuildInfo(o, n) {
+                if (o === n) return false;
+                if (this.HISTORIES.length === 0) return false;
+                let item = this.buildInfoList[this.active];
                 if (!item) return false;
-                this.$root.$emit('send', GET_BUILD_INFO, {
-                    uuid: item.uuid
-                });
+                this.$root.$emit('get-build-info', item.uuid);
             },
             handleClick(index) {
                 this.active = index;
-                this.getBuildInfo();
+                this.getBuildInfo(1, 2);
             }
         }
     };
@@ -107,6 +97,9 @@
 
 <style lang="less">
     .build-info-wrap {
+        .el-card {
+            box-shadow: none !important;
+        }
         .build-histories {
             list-style: none;
             min-height: 800px;

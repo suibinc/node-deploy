@@ -1,60 +1,61 @@
 <template>
     <tabs tab-position="top" v-model="active">
-        <tab-pane label="应用列表">
-            <app-list-view @tab-changed="tabChanged" @send="send"/>
-        </tab-pane>
-        <tab-pane label="脚本列表">
-            <script-list-view @tab-changed="tabChanged" @send="send"/>
-        </tab-pane>
-        <tab-pane label="构建队列">
-            <build-queue-view :list="PROJECT_LIST" :queue="queue" @send="send"/>
-        </tab-pane>
-        <tab-pane label="构建详情">
-            <build-info-view/>
-        </tab-pane>
-        <tab-pane label="全局设置">
-            <settings-view @send="send"/>
-        </tab-pane>
-        <tab-pane label="权限管理">
-            null
-        </tab-pane>
-        <tab-pane label="使用帮助">
-            null
-        </tab-pane>
+        <tab-pane v-for="(r, i) in routes" :key="i" :label="r.title"/>
+        <tab-pane label="权限管理"/>
+        <tab-pane label="使用帮助"/>
     </tabs>
 </template>
 
 <script>
-    import { Col, Row, TabPane, Tabs } from 'element-ui';
-    import { mapGetters } from 'vuex';
+    import { TabPane, Tabs } from 'element-ui';
     import { GET_PROJECT_LIST, GET_USER_SCRIPT, GET_TASK_QUEUE, GET_HISTORY_LIST } from '../../library/utils/events';
-    import AppListView from './app-list';
-    import BuildInfoView from './build-info';
-    import BuildQueueView from './build-queue';
-    import ScriptListView from './script-list';
-    import SettingsView from './settings';
 
     export default {
         components: {
-            Row,
-            Col,
             Tabs,
-            TabPane,
-            AppListView,
-            ScriptListView,
-            BuildQueueView,
-            BuildInfoView,
-            SettingsView
+            TabPane
         },
         data() {
             return {
                 timer: null,
                 queue: [],
-                active: 0
+                active: 0,
+                routes: [
+                    {
+                        path: '/index',
+                        name: 'index',
+                        title: '应用列表'
+                    },
+                    {
+                        path: '/script',
+                        name: 'script',
+                        title: '脚本列表'
+                    },
+                    {
+                        path: '/queue',
+                        name: 'queue',
+                        title: '构建队列'
+                    },
+                    {
+                        path: '/build',
+                        name: 'build',
+                        title: '构建详情'
+                    },
+                    {
+                        path: '/option',
+                        name: 'option',
+                        title: '全局设置'
+                    }
+                ]
             };
         },
-        computed: {
-            ...mapGetters(['PROJECT_LIST', 'USER_SCRIPT'])
+        watch: {
+            'active': 'tabChanged'
+        },
+        created() {
+            this.$root.$on('tab-changed', active => {
+                this.active = `${active}`;
+            });
         },
         mounted() {
             if (this.timer) {
@@ -69,10 +70,13 @@
         },
         methods: {
             send(event, message) {
-                this.$emit('send', event, message);
+                // this.$emit('send', event, message);
             },
-            tabChanged(active) {
-                this.active = `${active}`;
+            tabChanged(active, old) {
+                if (active === old) return false;
+                if (active < this.routes.length) {
+                    this.$router.push(this.routes[active].path);
+                }
             },
             fetch() {
                 let active = Number(this.active);

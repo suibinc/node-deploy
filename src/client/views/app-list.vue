@@ -123,8 +123,8 @@
                 this.show++;
             },
             viewPro(item) {
-                this.$root.$emit('build-info-changed', item.uuid);
-                this.$emit('tab-changed', 3);
+                this.$root.$emit('get-histories', item.uuid);
+                this.$root.$emit('tab-changed', 3);
             },
             delPro(item) {
                 this.$confirm('是否删除该应用并清除相关构建历史?', '删除确认', {
