@@ -27,7 +27,7 @@
 <script>
     import { Col, Row, TabPane, Tabs } from 'element-ui';
     import { mapGetters } from 'vuex';
-    import { GET_PROJECT_LIST, GET_USER_SCRIPT } from '../../library/utils/events';
+    import { GET_PROJECT_LIST, GET_USER_SCRIPT, GET_TASK_QUEUE, GET_HISTORY_LIST } from '../../library/utils/events';
     import AppListView from './app-list';
     import BuildInfoView from './build-info';
     import BuildQueueView from './build-queue';
@@ -80,6 +80,10 @@
                     this.send(GET_PROJECT_LIST);
                 } else if (active === 1) {
                     this.send(GET_USER_SCRIPT);
+                } else if (active === 2) {
+                    this.send(GET_TASK_QUEUE);
+                } else if (active === 3) {
+                    this.send(GET_HISTORY_LIST);
                 }
             }
         }

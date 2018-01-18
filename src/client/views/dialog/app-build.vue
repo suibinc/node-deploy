@@ -88,6 +88,7 @@
                         uuid: this.app.uuid,
                         script: this.option.script
                     });
+                    this.visible = false;
                     return false;
                 }
                 this.$message.warning('请选择构建脚本');

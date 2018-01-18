@@ -11,21 +11,6 @@
                 </template>
             </table-column>
         </el-table>
-
-        <h4>构建队列【预留】</h4>
-        <transition-group name="list" tag="ul" class="build-list">
-            <li v-for="(item, index) in buildQueue" :key="index">
-                <p class="title" v-text="item.name"></p>
-                <p class="desc" v-text="item.desc"></p>
-                <p class="time">
-                    <span>上次构建：2018-01-09 18:36:00</span>
-                    <span style="margin-left: 20px;">上次发布：2018-01-09 18:42:00</span>
-                </p>
-                <div class="build-option">
-                    <el-button type="danger" plain round size="mini" @click="removeCompiler">移出队列</el-button>
-                </div>
-            </li>
-        </transition-group>
     </div>
 </template>
 
