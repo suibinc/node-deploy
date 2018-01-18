@@ -10,16 +10,16 @@
             <build-queue-view :list="PROJECT_LIST" :queue="queue" @send="send"/>
         </tab-pane>
         <tab-pane label="构建详情">
-            <build-detail-view/>
+            <build-info-view/>
         </tab-pane>
         <tab-pane label="全局设置">
             <settings-view @send="send"/>
         </tab-pane>
         <tab-pane label="权限管理">
-            <build-detail-view/>
+            null
         </tab-pane>
         <tab-pane label="使用帮助">
-            <build-detail-view/>
+            null
         </tab-pane>
     </tabs>
 </template>
@@ -29,8 +29,8 @@
     import { mapGetters } from 'vuex';
     import { GET_PROJECT_LIST, GET_USER_SCRIPT } from '../../library/utils/events';
     import AppListView from './app-list';
-    import BuildDetailView from './detail';
-    import BuildQueueView from './queue';
+    import BuildInfoView from './build-info';
+    import BuildQueueView from './build-queue';
     import ScriptListView from './script-list';
     import SettingsView from './settings';
 
@@ -43,7 +43,7 @@
             AppListView,
             ScriptListView,
             BuildQueueView,
-            BuildDetailView,
+            BuildInfoView,
             SettingsView
         },
         data() {
@@ -75,7 +75,6 @@
                 this.active = `${active}`;
             },
             fetch() {
-                console.log('active', this.active);
                 let active = Number(this.active);
                 if (active === 0) {
                     this.send(GET_PROJECT_LIST);

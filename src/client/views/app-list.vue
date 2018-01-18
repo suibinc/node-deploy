@@ -123,7 +123,7 @@
                 this.show++;
             },
             viewPro(item) {
-                this.$root.$emit('build-repo', item.uuid);
+                this.$root.$emit('build-info-changed', item.uuid);
                 this.$emit('tab-changed', 3);
             },
             delPro(item) {

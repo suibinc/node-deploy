@@ -6,12 +6,21 @@
 
 <script>
     import io from 'socket.io-client';
-    import { UPDATE_PROJECT_LIST, UPDATE_USER_SCRIPT, UPDATE_USER_CONFIG, UPDATE_TASK_QUEUE } from './vuex/actions';
+    import {
+        UPDATE_PROJECT_LIST,
+        UPDATE_USER_SCRIPT,
+        UPDATE_USER_CONFIG,
+        UPDATE_TASK_QUEUE,
+        UPDATE_HISTORIES,
+        UPDATE_BUILD_INFO
+    } from './vuex/actions';
     import {
         GET_PROJECT_LIST,
         GET_USER_CONFIG,
         GET_USER_SCRIPT,
         GET_TASK_QUEUE,
+        GET_HISTORY_LIST,
+        GET_BUILD_INFO,
         SHOW_MESSAGE
     } from '../library/utils/events';
 
@@ -73,13 +82,28 @@
                     });
                 });
 
+                this.socket.on(GET_HISTORY_LIST, data => {
+                    console.log('GET_HISTORY_LIST', data);
+                    this.$store.dispatch({
+                        type: UPDATE_HISTORIES,
+                        list: data
+                    });
+                });
+
+                this.socket.on(GET_BUILD_INFO, data => {
+                    this.$store.dispatch({
+                        type: UPDATE_BUILD_INFO,
+                        info: data
+                    });
+                });
+
                 this.socket.on(SHOW_MESSAGE, data => {
                     this.$message(data);
                 });
             },
             send(event, message) {
                 if (!this.ready) return false;
-                // console.log('socket emit', event, message);
+                console.log('socket emit', event, message);
                 this.socket.emit(event, message || '');
             }
         }

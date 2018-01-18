@@ -173,11 +173,20 @@ function query(str) {
     };
 }
 
+function unlink(path) {
+    try {
+        fs.unlinkSync(path);
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 export default {
     mkdir,
     readFileSync,
     writeFileSync,
     pathinfo,
     ext,
-    query
+    query,
+    unlink
 };

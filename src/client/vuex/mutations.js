@@ -2,7 +2,8 @@ export const SET_PROJECT_LIST = 'SET_PROJECT_LIST';
 export const SET_USER_SCRIPT = 'SET_USER_SCRIPT';
 export const SET_USER_CONFIG = 'SET_USER_CONFIG';
 export const SET_TASK_QUEUE = 'SET_TASK_QUEUE';
-export const SET_BUILD_REPO = 'SET_BUILD_REPO';
+export const SET_BUILD_INFO = 'SET_BUILD_INFO';
+export const SET_HISTORIES = 'SET_HISTORIES';
 
 export const CORE = {
     [SET_PROJECT_LIST](state, list) {
@@ -23,7 +24,10 @@ export const CORE = {
     [SET_TASK_QUEUE](state, list) {
         state.taskQueue = list;
     },
-    [SET_BUILD_REPO](state, repo) {
-        state.buildRepo = repo;
+    [SET_HISTORIES](state, list) {
+        state.histories = list;
+    },
+    [SET_BUILD_INFO](state, info) {
+        state.buildInfo = info;
     }
 };

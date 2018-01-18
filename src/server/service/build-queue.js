@@ -16,10 +16,6 @@ class BuildQueue {
         if (historyJson.length > 2) histories = JSON.parse(historyJson);
     }
 
-    getBuildRepo() {
-        return buildRepo;
-    }
-
     addTask(task) {
         console.log(task);
         if (task) {
@@ -34,6 +30,10 @@ class BuildQueue {
                 start: Date.now(),
                 end: Date.now()
             });
+            if (histories[task.uuid].length > 20) {
+                let temp = histories[task.uuid].pop();
+                file.unlink(`${HISTORY_ROOT}/${temp.uuid}.log`);
+            }
             file.writeFileSync(HISTORY_PATH, JSON.stringify(histories), undefined, false);
             this.runTask();
         }
@@ -64,6 +64,17 @@ class BuildQueue {
 
     getTaskQueue() {
         return taskQueue;
+    }
+
+    getHistories(data) {
+        console.log(data);
+        if (!data.uuid) return [];
+        return histories[data.uuid] || [];
+    }
+
+    getBuildInfo(data) {
+        if (!data.uuid) return [];
+        return file.readFileSync(`${HISTORY_ROOT}/${data.uuid}.log`);
     }
 }
 

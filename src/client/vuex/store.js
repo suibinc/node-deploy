@@ -25,7 +25,7 @@ const state = {
     },
     taskQueue: [],
     histories: [],
-    buildRepo: ''
+    buildInfo: ''
 };
 
 export default {

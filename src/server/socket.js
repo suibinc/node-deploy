@@ -94,20 +94,23 @@ let register = socket => {
     // 开始构建，返回构建队列
     socket.on(SOCKET_EVENTS.GET_TASK_QUEUE, (data, cb) => {
         handler[SOCKET_EVENTS.GET_TASK_QUEUE]().then(result => {
-            socket.emit('task-queue', result);
+            socket.emit(SOCKET_EVENTS.GET_TASK_QUEUE, result);
         });
     });
 
     // 查看构建历史
     socket.on(SOCKET_EVENTS.GET_HISTORY_LIST, (data, cb) => {
-        console.log('history');
-        console.log(data);
+        handler[SOCKET_EVENTS.GET_HISTORY_LIST](data).then(result => {
+            console.log(result);
+            socket.emit(SOCKET_EVENTS.GET_HISTORY_LIST, result);
+        });
     });
 
     // 查看某个构建日志
     socket.on(SOCKET_EVENTS.GET_BUILD_INFO, (data, cb) => {
-        console.log('history');
-        console.log(data);
+        handler[SOCKET_EVENTS.GET_BUILD_INFO](data).then(result => {
+            socket.emit(SOCKET_EVENTS.GET_BUILD_INFO, result);
+        });
     });
 
     socket.on('disconnect', () => {

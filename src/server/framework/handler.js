@@ -36,6 +36,14 @@ class Handler {
     async [SOCKET_EVENTS.GET_TASK_QUEUE]() {
         return BuildQueue.getTaskQueue();
     }
+
+    async [SOCKET_EVENTS.GET_HISTORY_LIST](data) {
+        return BuildQueue.getHistories(data);
+    }
+
+    async [SOCKET_EVENTS.GET_BUILD_INFO](data) {
+        return BuildQueue.getBuildInfo(data);
+    }
 }
 
 export default new Handler();
