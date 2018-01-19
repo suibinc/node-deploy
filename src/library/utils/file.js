@@ -175,7 +175,7 @@ function query(str) {
 
 function unlink(path) {
     try {
-        fs.unlinkSync(path);
+        if (_exists(path)) fs.unlinkSync(path);
     } catch (e) {
         console.log(e);
     }

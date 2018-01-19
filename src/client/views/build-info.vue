@@ -41,7 +41,9 @@
             ...mapGetters(['HISTORIES', 'BUILD_INFO']),
             buildInfoHtml() {
                 if (this.BUILD_INFO) {
-                    return this.BUILD_INFO.replace(/\n/g, '<br>');
+                    let result = this.BUILD_INFO.replace(/\n/g, '<br>');
+                    result = result.replace(/\r/g, '  ');
+                    return result;
                 }
                 return '暂无构建输出';
             },
@@ -53,7 +55,6 @@
             'HISTORIES': 'getBuildInfo'
         },
         mounted() {
-            console.log('build info mounted');
             this.clearBuildInfo();
         },
         methods: {

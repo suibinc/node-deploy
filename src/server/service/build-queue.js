@@ -1,6 +1,6 @@
 import config from '../../../build/config';
 import file from "../../library/utils/file";
-import compiler from '../framework/compiler';
+import { compiler } from '../framework/compiler';
 import UserConfig from './user-config';
 
 const HISTORY_ROOT = `${config.PATH.CONFIG_ROOT}/__cache__/history`;
@@ -31,7 +31,7 @@ class BuildQueue {
                 end: Date.now()
             });
             if (histories[task.uuid].length > 20) {
-                let temp = histories[task.uuid].pop();
+                let temp = histories[task.uuid].shift();
                 file.unlink(`${HISTORY_ROOT}/${temp.uuid}.log`);
             }
             file.writeFileSync(HISTORY_PATH, JSON.stringify(histories), undefined, false);
@@ -46,7 +46,6 @@ class BuildQueue {
 
         let task = taskQueue.pop();
         if (!task) return false;
-
         compiler(task.script, task.params, data => {
             buildRepo = buildRepo + data;
             file.writeFileSync(`${HISTORY_ROOT}/${task.task}.log`, buildRepo, undefined, false);
@@ -67,7 +66,6 @@ class BuildQueue {
     }
 
     getHistories(data) {
-        console.log(data);
         if (!data.uuid) return [];
         return histories[data.uuid] || [];
     }

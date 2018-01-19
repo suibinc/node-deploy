@@ -101,7 +101,6 @@ let register = socket => {
     // 查看构建历史
     socket.on(SOCKET_EVENTS.GET_HISTORY_LIST, (data, cb) => {
         handler[SOCKET_EVENTS.GET_HISTORY_LIST](data).then(result => {
-            console.log(result);
             socket.emit(SOCKET_EVENTS.GET_HISTORY_LIST, result);
         });
     });
